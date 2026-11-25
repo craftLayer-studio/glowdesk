@@ -95,7 +95,7 @@ Out of MVP on purpose: inventory, memberships, multi-outlet, payroll, marketplac
 
 ## Data model (product-specific entities)
 
-Core entities (tenant, customer, consent, message, payment, review) live in [core](../../core/README.md). GlowDesk adds:
+Core entities (tenant, customer, consent, message, payment, review) live in [core](https://github.com/craftLayer-studio/craftlayer-core/blob/main/README.md). GlowDesk adds:
 
 | Entity | Key fields |
 |---|---|

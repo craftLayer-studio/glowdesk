@@ -54,7 +54,7 @@ The commercial thesis: Indian salons do not lack billing software, they lack **r
 
 ## Rules for agents editing this folder
 
-- Follow [CONVENTIONS.md](../CONVENTIONS.md).
+- Follow [CONVENTIONS.md](https://github.com/craftLayer-studio/craftlayer-products/blob/main/CONVENTIONS.md).
 - Every new number needs a source link with access date, or the label **(estimate)** with reasoning.
 - Tie every new feature to one metric: acquisition, activation, retention, revenue or referral.
 - Reference core modules instead of re-specifying them.
