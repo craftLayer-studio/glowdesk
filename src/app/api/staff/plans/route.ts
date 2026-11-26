@@ -1,0 +1,11 @@
+import { getDb } from "@/server/db/client";
+import { handle } from "@/server/http";
+import { requireRole } from "@/server/session";
+import { listPlans } from "@/server/store";
+
+export async function GET() {
+  return handle(async () => {
+    const s = await requireRole("staff");
+    return listPlans(await getDb(), s.orgId);
+  });
+}
