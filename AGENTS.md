@@ -52,9 +52,72 @@ The commercial thesis: Indian salons do not lack billing software, they lack **r
 5. Is ₹799 Starter too cheap to cover field-sales CAC in Tier 2–3? Revisit after 50 customers.
 6. Home-service beauticians (huge segment) — separate light plan later, or out of scope?
 
+## Code
+
+MVP web app: Next.js 16.4.6 App Router, React 19.3, TypeScript strict, Astryx 0.7.17 (theme `chocolate`), Drizzle ORM on PGlite (dev/tests) or Postgres (`DATABASE_URL`). See README for how to run.
+
+### Structure
+
+| Path | What |
+|---|---|
+| `src/domain/` | Pure business rules with Vitest tests: money (paise), IST time, phone (E.164), booking overlap and slots, queue position, bill/GST, commission, rebooking nudge planner, reminders, consent, review routing, dashboard metrics, OTP, UPI links |
+| `src/server/db/` | Drizzle schema, client (PGlite or pg), SQL migrations (`migrations/`), demo seed |
+| `src/server/store/` | Use cases and data access; every query filters by `org_id`; multi-step writes in transactions. `store.test.ts` runs against in-memory PGlite |
+| `src/server/adapters/messaging.ts` | Messaging interface; the `simulated` sender writes to `outbox` |
+| `src/server/http.ts`, `session.ts`, `rate-limit.ts` | Input parsing, JSON errors, signed httpOnly session cookie and role checks, in-memory limiter for public endpoints |
+| `src/app/api/` | Thin route handlers: `public/[qr]` (QR flows, rate-limited), `reviews`, `auth`, `staff/*` (staff role), `owner/*` (owner role) |
+| `src/app/`, `src/components/` | Pages: `/` landing, `/q/[qr]` client page, `/login`, `/staff`, `/owner`, `/owner/qr`, `/r/[token]` |
+
+### Commands
+
+`pnpm typecheck && pnpm lint && pnpm test && pnpm build`, then `pnpm exec astryx doctor --built .`. `pnpm db:generate` after schema changes (commit the SQL). Dev servers on ports 3101-3199 only.
+
+### Rules
+
+- Money is integer paise; times are UTC `timestamptz`, shown in Asia/Kolkata.
+- Never trust client totals: bills are priced on the server from the menu, packages and memberships.
+- Every business row has `org_id`; every query filters by it. Public links use unguessable tokens.
+- Marketing messages only to clients whose latest `consent_records` row for `marketing` is granted. Max 2 per 30 days.
+- New integrations go behind an adapter with a simulated implementation. No third-party network calls.
+- UI: Astryx components and tokens only, no raw `div`/`span`, hex or px; brand via the theme. Demo data stays labelled Demo.
+- Commits: conventional subjects. No `Co-Authored-By` or "Generated with" lines.
+
 ## Rules for agents editing this folder
 
 - Follow [CONVENTIONS.md](https://github.com/craftLayer-studio/craftlayer-products/blob/main/CONVENTIONS.md).
 - Every new number needs a source link with access date, or the label **(estimate)** with reasoning.
 - Tie every new feature to one metric: acquisition, activation, retention, revenue or referral.
 - Reference core modules instead of re-specifying them.
+
+<!-- ASTRYX:START -->
+Astryx v0.7.17 · 174 components
+CLI: run every command as `pnpm exec astryx <cmd>` (shown below as `astryx ...`).
+
+SETUP (once, in app entry e.g. main.tsx) — without these, components render unstyled:
+  import "@astryxdesign/core/reset.css";
+  import "@astryxdesign/core/astryx.css";
+
+WORKFLOW — start every page from a template, never from scratch:
+1. `astryx build "<idea>"` — names the template to scaffold from and the parts it lacks.
+2. `astryx template <name> <path>` — scaffold it; keep its frame, gap and padding; replace the content.
+3. `astryx component <Name>` to read props before using one; `astryx template <Block>` prints a block example to read for a part it lacks. Astryx names differ from other libraries: buttons, badges, tokens and tabs take their text in `label` (Text, Heading and Link take children), booleans start with `is` or `has` (`isOpen`, `isDisabled`), and every input takes `value` and `onChange`.
+Changing an existing page? Keep it: skip step 2 and add components inside its sections; read a block example when it helps.
+Before you deliver a build, run `astryx doctor --built <dir>`; don't deliver it if it fails.
+
+RULES:
+- No <div> — components handle all layout and spacing.
+- Read `astryx docs layout` before changing a template's frame.
+- Dense data = rows (Table, List/Item), not Card-wrapped lists. Badge = counts only.
+- Style with component props first, then tokens (var(--color-*|--spacing-*|--radius-*)). No raw hex/px. No StyleX/Tailwind compiler here — don't use xstyle/utility classes directly. Some templates use StyleX and need a compiler plugin; see `astryx docs styling-overview`.
+- THEMES: palettes and custom colors go through the theme, never :root overrides; so does a denser or roomier app (`editor set <name> spacing tight`), never gap and padding changes page by page. A change to one kind of part (the sidebar, its selected item, the gaps in a form) is a theme change too, not props on one page: `editor how "<ask>"` names the `set … --on <part>` line. No app yet: `astryx experimental theme preview app <dir>` makes a starter app that shows the theme. To make or change a theme (colors, fonts, corners, spacing, a look from a picture), prefer the experimental theme editor over hand-written theme files: `astryx experimental theme editor new <name> --like neutral`, then `editor set <name> <thing> <value>` or `editor how "<what you want>"`; wire it with `astryx theme add <name>`; after each change look at it with `astryx experimental theme editor show <name> --png` (takes pictures of real components) and open the PNGs it writes; a theme change is not done until you have looked at the pictures. In code, extend an imported theme to customize it; `theme eject <slug>` only forks source. See `astryx docs theme`.
+- SELF-CHECK: re-read the file; replace any raw <div>/<span>, imported .css/@apply, or hardcoded #hex/px with the component or a token.
+
+`astryx help` lists every command. Key ones beyond the workflow:
+  search "<query>"   find any component / hook / doc / template
+  discover <words>   integrations you could add
+  docs <topic>       getting-started, principles, tokens, theme … (`astryx docs` lists all)
+  docs cli           commands and API reference
+  docs authoring     build an integration package, and every field it holds
+  upgrade --from <old version> --apply   run after a dependency bump
+To remove this block, run `astryx init --remove-agents`, which removes it from the agent files at the project root and in the folder you run it in; from any other file it leaves, delete everything from ASTRYX:START to ASTRYX:END.
+<!-- ASTRYX:END -->

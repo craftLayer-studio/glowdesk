@@ -55,22 +55,24 @@ Every independent salon in India knows which clients are due, nudges them on Wha
 
 ## Features by phase
 
+Build status (MVP code in this repo, 2026-11): every P0 row and #12 packages/memberships are marked "(built)". Messaging and payments are simulated.
+
 Priority: P0 = MVP, sellable in 6–8 weeks. P1 = months 3–5. P2 = months 6–12.
 
 | # | Feature | Priority | Core module | Metric |
 |---|---|---|---|---|
-| 1 | Mirror/reception QR with walk-in queue and live position | P0 | QR engine, booking engine | Activation |
-| 2 | Service menu with prices, duration, gender/category | P0 | Storefront/catalog | Acquisition |
-| 3 | Online booking with stylist selection and slots | P0 | Booking engine | Acquisition, revenue |
-| 4 | Consent capture (DPDP notice, separate marketing opt-in) | P0 | CRM | Compliance (enables retention) |
-| 5 | Client CRM: visit history, spend, favourite stylist, notes (allergies, colour formula) | P0 | CRM | Retention |
-| 6 | WhatsApp booking confirmations and reminders | P0 | Messaging | Retention (no-shows) |
-| 7 | Service-cycle rebooking nudges with recovered-revenue tracking | P0 | Messaging, analytics | Retention, revenue |
-| 8 | Simple billing with GST invoice, UPI/cash/card split | P0 | Payments | Activation |
-| 9 | Stylist commission rules and daily commission report (staff app) | P0 | Staff app | Activation (staff adoption) |
-| 10 | Google review funnel after visit | P0 | Reviews | Acquisition |
-| 11 | Owner daily WhatsApp summary | P0 | Analytics | Retention (of the salon) |
-| 12 | Packages and memberships with prepaid balance | P1 | Loyalty, payments | Revenue (salon ARPU, our upsell) |
+| 1 | Mirror/reception QR with walk-in queue and live position | P0 (built) | QR engine, booking engine | Activation |
+| 2 | Service menu with prices, duration, gender/category | P0 (built) | Storefront/catalog | Acquisition |
+| 3 | Online booking with stylist selection and slots | P0 (built) | Booking engine | Acquisition, revenue |
+| 4 | Consent capture (DPDP notice, separate marketing opt-in) | P0 (built) | CRM | Compliance (enables retention) |
+| 5 | Client CRM: visit history, spend, favourite stylist, notes (allergies, colour formula) | P0 (built) | CRM | Retention |
+| 6 | WhatsApp booking confirmations and reminders | P0 (built) | Messaging | Retention (no-shows) |
+| 7 | Service-cycle rebooking nudges with recovered-revenue tracking | P0 (built) | Messaging, analytics | Retention, revenue |
+| 8 | Simple billing with GST invoice, UPI/cash/card split | P0 (built) | Payments | Activation |
+| 9 | Stylist commission rules and daily commission report (staff app) | P0 (built) | Staff app | Activation (staff adoption) |
+| 10 | Google review funnel after visit | P0 (built) | Reviews | Acquisition |
+| 11 | Owner daily WhatsApp summary | P0 (built) | Analytics | Retention (of the salon) |
+| 12 | Packages and memberships with prepaid balance | P1 (built) | Loyalty, payments | Revenue (salon ARPU, our upsell) |
 | 13 | Product upsell prompts (retail products linked to service, e.g. after colour suggest colour-safe shampoo) | P1 | Catalog | Revenue |
 | 14 | Consumables inventory with low-stock alert, per-service consumption | P1 | — (product-specific) | Retention |
 | 15 | Loyalty points and referral reward | P1 | Loyalty | Referral, retention |

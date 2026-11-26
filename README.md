@@ -43,6 +43,65 @@ WhatsApp messages are billed as prepaid credits at Meta's rate plus a margin. De
 - Global tools are priced for the US: Fresha's Team plan is $14.95 per bookable member per month; Zenoti is about $300 per month and up.
 - The free Queue tier puts a QR on the mirror on day one and converts on visible results.
 
+## Status
+
+**MVP, demo data, simulated messaging and payments.** Live at [glowdesk.craftlayer.store](https://glowdesk.craftlayer.store) once deployed. Support: glowdesk@craftlayer.store. The demo salon ("Kesar Glow Unisex Salon", Indore) and all its clients are fictional and labelled Demo. WhatsApp and SMS go to an outbox table shown in the app; nothing leaves the machine. Payments are recorded, with a free UPI intent link; no gateway.
+
+## How to run
+
+Needs Node 20.9+ and pnpm 11.
+
+```bash
+pnpm install
+cp .env.example .env.local   # set APP_URL=http://localhost:3141 and a SESSION_SECRET
+pnpm dev --port 3141         # next dev --webpack; migrates and seeds ./.data/pglite on first request
+```
+
+| Command | What it does |
+|---|---|
+| `pnpm dev` / `pnpm build` / `pnpm start` | Next.js 16 with webpack |
+| `pnpm typecheck && pnpm lint && pnpm test && pnpm build` | Quality gates (CI runs the same) |
+| `pnpm exec astryx doctor --built .` | Astryx design-system check |
+| `pnpm db:generate` | New SQL migration from `src/server/db/schema.ts` (drizzle-kit) |
+| `pnpm db:seed` / `pnpm db:seed --reset` | Seed an empty DB / rebuild the demo salon |
+
+Set `DATABASE_URL` to use real Postgres (node-postgres) instead of PGlite. `DEMO_MODE=false` hides OTP codes on screen.
+
+## Demo walkthrough
+
+| Step | URL |
+|---|---|
+| Landing page | `/` |
+| Client scans the reception QR: join queue, book a slot, menu | `/q/demo-kesar-glow-7Hq2xP` |
+| Live ticket with queue position (after joining) | `/q/<qr>/t/<ticket>` |
+| Booking page with cancel and opt-out | `/q/<qr>/b/<booking>` |
+| Staff sign-in (phone + OTP, code shown on screen in demo) | `/login`: owner 98260 00001, reception 98260 00002 |
+| Front desk: live queue, today's diary, checkout, clients CRM, sell packages | `/staff` |
+| Owner: dashboard, rebooking nudges, menu, stylists, packages, WhatsApp outbox, settings | `/owner` |
+| Printable QR standees | `/owner/qr` |
+| Review funnel (link sent after each bill) | `/r/<token>` |
+
+## Built vs planned
+
+| Feature (docs/01 #) | Status |
+|---|---|
+| 1 QR walk-in queue with live position | Built |
+| 2 Service menu with prices, durations, category | Built |
+| 3 Booking by service, stylist and slot; no overlaps per stylist (row lock + check) | Built |
+| 4 DPDP consent: two unticked opt-ins, consent log, opt-out | Built |
+| 5 Client CRM: history, spend, favourite stylist, notes | Built |
+| 6 WhatsApp confirmations and 24 h / 2 h reminders | Built (simulated outbox) |
+| 7 Service-cycle rebooking nudges, follow-up, 2/month cap, recovered revenue | Built (simulated outbox) |
+| 8 Billing with GST, cash/UPI/card/wallet, UPI intent link | Built (one method per bill; no split tender) |
+| 9 Stylist commission rules (percent/flat, service override, package sales), daily report | Built |
+| 10 Review funnel (4-5 stars to Google, 1-3 private) | Built |
+| 11 Owner daily WhatsApp summary | Built (on demand; no scheduler yet) |
+| 12 Packages and memberships with prepaid wallet | Built (P1, pulled forward) |
+| Owner dashboard: chair utilisation, revenue by stylist, repeat rate | Built |
+| P1/P2: inventory, loyalty, birthday offers, gallery, deposits, win-back, multi-outlet | Planned |
+
+Not yet: real WhatsApp BSP, payment gateway, a cron for daily jobs (owner presses "Send due reminders and nudges"), setup wizard for new salons.
+
 ## Documents
 
 | Doc | Contents |
